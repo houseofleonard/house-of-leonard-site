@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #060d2a;
+  --color-primary-container: #1c2340;
+  --color-on-primary: #ffffff;
+  --color-secondary: #755b00;
+  --color-secondary-container: #fed977;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #785d00;
+  --color-surface: #fff8f2;
+  --color-surface-dim: #e9d8bb;
+  --color-surface-variant: #f1e0c3;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #fff2de;
+  --color-surface-container: #fdecce;
+  --color-surface-container-high: #f7e6c9;
+  --color-surface-container-highest: #f1e0c3;
+  --color-on-surface: #231a08;
+  --color-on-surface-variant: #46464d;
+  --color-outline: #76767e;
+  --color-outline-variant: #c6c5ce;
+
+  --font-display: "Cormorant Garamond", serif;
+  --font-label: "Jost", sans-serif;
+  --font-body: "Plus Jakarta Sans", sans-serif;
+
+  --radius-DEFAULT: 0.25rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: #fed977;
+  color: #060d2a;
+}
+
+.editorial-shadow {
+  box-shadow: 0 40px 80px -20px rgba(35, 26, 8, 0.06);
+}
+
+.glass-nav {
+  background: rgba(241, 224, 195, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.btn-primary {
+  display: inline-block;
+  background: linear-gradient(135deg, #060d2a 0%, #1c2340 100%);
+  color: #ffffff;
+  font-family: var(--font-label);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  padding: 0.75rem 2rem;
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #1c2340 0%, #2a3356 100%);
+  box-shadow: 0 8px 32px rgba(6, 13, 42, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  display: inline-block;
+  border: 1px solid rgba(118, 118, 126, 0.4);
+  color: #060d2a;
+  font-family: var(--font-label);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  padding: 0.75rem 2rem;
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-ghost:hover {
+  border-color: #755b00;
+  color: #755b00;
+}
+
+.section-label {
+  font-family: var(--font-label);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.7rem;
+  color: var(--color-on-surface-variant);
+}
