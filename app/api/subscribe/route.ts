@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
         'accept': 'application/json',
         'revision': '2024-02-15',
         'content-type': 'application/json',
-        'Authorization': `Klaviyo-API-Key ${KLAVIYO_LIST_ID}`,
+        'Authorization': `Klaviyo-API-Key ${KLAVIYO_API_KEY}`,
       },
       body: JSON.stringify({
         data: [{ type: 'profile', id: profileId }],
