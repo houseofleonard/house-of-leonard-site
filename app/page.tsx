@@ -27,14 +27,19 @@ export default function Home() {
     if (!email) return;
     setLoading(true);
 
-    // TODO: Replace with real email service (Mailchimp, ConvertKit, Klaviyo etc.)
-    // Recommended for DTC fashion: Klaviyo
-    // Create app/api/subscribe/route.ts and POST { email } to your provider
-    console.log("Email signup:", email);
-
-    await new Promise((r) => setTimeout(r, 800));
-    setSubmitted(true);
-    setLoading(false);
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) throw new Error('Subscription failed');
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
