@@ -179,29 +179,24 @@ export default function Home() {
               borderRadius: "0.25rem",
               overflow: "hidden",
               maxHeight: "580px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}>
-              {/* TODO: Replace with editorial brand photography */}
-              {/* TODO: Replace with editorial portrait — silver fox in terracotta linen suit, European street setting */}
+              {/* Photography coming — silver fox, Mediterranean light, bold colour */}
               <div style={{
                 width: "100%",
                 height: "100%",
-                backgroundImage: "url('https://images.unsplash.com/photo-1617137968427-85924c800a22?w=900&q=80&fit=crop&crop=top')",
-                backgroundSize: "cover",
-                backgroundPosition: "center top",
-              }} />
-            </div>
-            {/* Floating label */}
-            <div className="editorial-shadow" style={{
-              position: "absolute",
-              bottom: "-1.5rem",
-              left: "-1.5rem",
-              backgroundColor: colors.secondaryContainer,
-              padding: "0.75rem 1.25rem",
-              borderRadius: "0.25rem",
-            }}>
-              <p className="section-label" style={{ color: colors.onSecondaryContainer }}>
-                Resortwear · &apos;26
-              </p>
+                background: `linear-gradient(160deg, ${colors.surfaceContainer} 0%, ${colors.surfaceDim} 100%)`,
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "flex-start",
+                padding: "2rem",
+              }}>
+                <p className="section-label" style={{ color: `${colors.onSurfaceVariant}66` }}>
+                  Photography coming soon
+                </p>
+              </div>
             </div>
           </div>
         </div>
