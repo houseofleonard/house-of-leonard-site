@@ -179,24 +179,14 @@ export default function Home() {
               borderRadius: "0.25rem",
               overflow: "hidden",
               maxHeight: "580px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
             }}>
-              {/* Photography coming — silver fox, Mediterranean light, bold colour */}
               <div style={{
                 width: "100%",
                 height: "100%",
-                background: `linear-gradient(160deg, ${colors.surfaceContainer} 0%, ${colors.surfaceDim} 100%)`,
-                display: "flex",
-                alignItems: "flex-end",
-                justifyContent: "flex-start",
-                padding: "2rem",
-              }}>
-                <p className="section-label" style={{ color: `${colors.onSurfaceVariant}66` }}>
-                  Photography coming soon
-                </p>
-              </div>
+                backgroundImage: "url('/placeholder-hero.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center top",
+              }} />
             </div>
           </div>
         </div>
