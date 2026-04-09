@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Jost, Plus_Jakarta_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -49,6 +50,7 @@ export default function RootLayout({
         className={`${cormorant.variable} ${jost.variable} ${plusJakarta.variable} bg-surface text-on-surface font-body antialiased`}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
