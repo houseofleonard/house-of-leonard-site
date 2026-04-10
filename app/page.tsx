@@ -297,9 +297,9 @@ export default function Home() {
             lineHeight: 1.85,
             maxWidth: "480px",
             margin: "0 auto 3rem",
-          }}>
-            Early access, editorial dispatches, and the occasional very good reason
-            to buy a new linen shirt. No noise. Just the good stuff.
+            textWrap: "balance",
+          } as React.CSSProperties}>
+            Early access, editorial dispatches, and the occasional very good reason to buy a new linen shirt. No noise. Just the good stuff.
           </p>
 
           {submitted ? (
@@ -312,7 +312,8 @@ export default function Home() {
                 fontSize: "clamp(1.4rem, 3vw, 2rem)",
                 lineHeight: 1.4,
                 marginBottom: "1rem",
-              }}>
+                textWrap: "balance",
+              } as React.CSSProperties}>
                 You&apos;re on the list.
               </p>
               <p style={{

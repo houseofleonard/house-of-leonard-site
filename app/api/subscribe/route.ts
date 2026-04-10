@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Step 1 — Create or update the profile (no subscriptions here)
+    // Step 1 — Create or update profile
     const profileRes = await fetch('https://a.klaviyo.com/api/profiles/', {
       method: 'POST',
       headers: KLAVIYO_HEADERS,
@@ -38,6 +38,8 @@ export async function POST(req: NextRequest) {
               ...(utm_content  && { utm_content }),
               ...(utm_term     && { utm_term }),
               signup_source: utm_source || 'direct',
+              marketing_consent: true,
+              consented_at: new Date().toISOString(),
             },
           },
         },
@@ -58,46 +60,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Subscription failed' }, { status: 500 });
     }
 
-    // Step 2 — Subscribe the profile to the list with explicit consent
-    const subRes = await fetch('https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/', {
+    // Step 2 — Add profile to list
+    const listRes = await fetch(`https://a.klaviyo.com/api/lists/${KLAVIYO_LIST_ID}/relationships/profiles/`, {
       method: 'POST',
       headers: KLAVIYO_HEADERS,
       body: JSON.stringify({
-        data: {
-          type: 'profile-subscription-bulk-create-job',
-          attributes: {
-            profiles: {
-              data: [{
-                type: 'profile',
-                id: profileId,
-                attributes: {
-                  email,
-                  subscriptions: {
-                    email: {
-                      marketing: {
-                        consent: 'SUBSCRIBED',
-                      },
-                    },
-                  },
-                },
-              }],
-            },
-          },
-          relationships: {
-            list: {
-              data: {
-                type: 'list',
-                id: KLAVIYO_LIST_ID,
-              },
-            },
-          },
-        },
+        data: [{ type: 'profile', id: profileId }],
       }),
     });
 
-    if (!subRes.ok && subRes.status !== 202) {
-      const err = await subRes.json();
-      console.error('Klaviyo subscription error:', JSON.stringify(err));
+    if (!listRes.ok && listRes.status !== 204) {
+      const err = await listRes.json();
+      console.error('Klaviyo list error:', JSON.stringify(err));
       return NextResponse.json({ error: 'Subscription failed' }, { status: 500 });
     }
 
