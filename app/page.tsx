@@ -23,6 +23,7 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [utmParams, setUtmParams] = useState<Record<string, string>>({});
+  const [error, setError] = useState("");
 
   // Capture UTM parameters from URL on mount
   React.useEffect(() => {
@@ -40,16 +41,21 @@ export default function Home() {
     if (!email || !consent) return;
     setLoading(true);
 
+    setError("");
     try {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, consent: true, ...utmParams }),
       });
-      if (!res.ok) throw new Error('Subscription failed');
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Subscription failed');
+      }
       setSubmitted(true);
     } catch (err) {
       console.error(err);
+      setError('Something went wrong — please try again.');
     } finally {
       setLoading(false);
     }
@@ -297,15 +303,25 @@ export default function Home() {
           </p>
 
           {submitted ? (
-            <div style={{ maxWidth: "480px", margin: "0 auto", padding: "2rem 0" }}>
+            <div style={{ maxWidth: "480px", margin: "0 auto", padding: "3rem 2rem", background: "rgba(255,255,255,0.06)", borderRadius: "0.25rem" }}>
               <p style={{
                 fontFamily: "var(--font-display, 'Cormorant Garamond', serif)",
                 fontWeight: 300,
                 fontStyle: "italic",
                 color: colors.onPrimary,
-                fontSize: "1.6rem",
+                fontSize: "clamp(1.4rem, 3vw, 2rem)",
+                lineHeight: 1.4,
+                marginBottom: "1rem",
               }}>
-                You&apos;re on the list. Something exceptional is on its way.
+                You&apos;re on the list.
+              </p>
+              <p style={{
+                fontFamily: "var(--font-body)",
+                fontWeight: 300,
+                color: "rgba(255,255,255,0.65)",
+                fontSize: "1rem",
+              }}>
+                Something exceptional is on its way.
               </p>
             </div>
           ) : (
@@ -374,15 +390,27 @@ export default function Home() {
             </form>
           )}
 
-          <p style={{
-            marginTop: "1.5rem",
-            color: "rgba(255,255,255,0.25)",
-            fontFamily: "var(--font-label)",
-            fontSize: "0.65rem",
-            letterSpacing: "0.1em",
-          }}>
-            No spam. Unsubscribe at any time.
-          </p>
+          {error && (
+            <p style={{
+              marginTop: "1rem",
+              color: "#f87171",
+              fontFamily: "var(--font-body)",
+              fontSize: "0.85rem",
+            }}>
+              {error}
+            </p>
+          )}
+          {!submitted && (
+            <p style={{
+              marginTop: "1.5rem",
+              color: "rgba(255,255,255,0.25)",
+              fontFamily: "var(--font-label)",
+              fontSize: "0.65rem",
+              letterSpacing: "0.1em",
+            }}>
+              No spam. Unsubscribe at any time.
+            </p>
+          )}
         </div>
       </section>
 
