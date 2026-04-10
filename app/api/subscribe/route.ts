@@ -4,7 +4,7 @@ const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY!;
 const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID!;
 
 export async function POST(req: NextRequest) {
-  const { email, consent } = await req.json();
+  const { email, consent, utm_source, utm_medium, utm_campaign, utm_content, utm_term } = await req.json();
 
   if (!email || !email.includes('@')) {
     return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
@@ -31,6 +31,14 @@ export async function POST(req: NextRequest) {
           type: 'profile',
           attributes: {
             email,
+            properties: {
+              ...(utm_source && { utm_source }),
+              ...(utm_medium && { utm_medium }),
+              ...(utm_campaign && { utm_campaign }),
+              ...(utm_content && { utm_content }),
+              ...(utm_term && { utm_term }),
+              signup_source: utm_source || 'direct',
+            },
             subscriptions: {
               email: {
                 marketing: {

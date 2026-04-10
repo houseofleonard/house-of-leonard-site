@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 const colors = {
   primary: "#060d2a",
@@ -22,6 +22,18 @@ export default function Home() {
   const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [utmParams, setUtmParams] = useState<Record<string, string>>({});
+
+  // Capture UTM parameters from URL on mount
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const utm: Record<string, string> = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(key => {
+      const val = params.get(key);
+      if (val) utm[key] = val;
+    });
+    if (Object.keys(utm).length > 0) setUtmParams(utm);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +44,7 @@ export default function Home() {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, consent: true }),
+        body: JSON.stringify({ email, consent: true, ...utmParams }),
       });
       if (!res.ok) throw new Error('Subscription failed');
       setSubmitted(true);
