@@ -19,19 +19,20 @@ const colors = {
 
 export default function Home() {
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !consent) return;
     setLoading(true);
 
     try {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, consent: true }),
       });
       if (!res.ok) throw new Error('Subscription failed');
       setSubmitted(true);
@@ -297,6 +298,31 @@ export default function Home() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ maxWidth: "480px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem", marginBottom: "0.5rem", textAlign: "left" }}>
+                <input
+                  type="checkbox"
+                  id="consent"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  required
+                  style={{
+                    marginTop: "2px",
+                    accentColor: colors.secondary,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                />
+                <label htmlFor="consent" style={{
+                  fontFamily: "var(--font-body)",
+                  fontWeight: 300,
+                  fontSize: "0.78rem",
+                  color: "rgba(255,255,255,0.55)",
+                  lineHeight: 1.6,
+                  cursor: "pointer",
+                }}>
+                  I&apos;d like to receive updates and news from House of Leonard
+                </label>
+              </div>
               <div style={{ display: "flex", gap: "0.75rem" }}>
                 <input
                   type="email"

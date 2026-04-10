@@ -4,14 +4,20 @@ const KLAVIYO_API_KEY = process.env.KLAVIYO_PRIVATE_API_KEY!;
 const KLAVIYO_LIST_ID = process.env.KLAVIYO_LIST_ID!;
 
 export async function POST(req: NextRequest) {
-  const { email } = await req.json();
+  const { email, consent } = await req.json();
 
   if (!email || !email.includes('@')) {
     return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
   }
 
+  if (!consent) {
+    return NextResponse.json({ error: 'Consent required' }, { status: 400 });
+  }
+
+  const consentedAt = new Date().toISOString();
+
   try {
-    // Add profile to Klaviyo
+    // Add profile to Klaviyo with explicit marketing consent
     const profileRes = await fetch('https://a.klaviyo.com/api/profiles/', {
       method: 'POST',
       headers: {
@@ -23,7 +29,17 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         data: {
           type: 'profile',
-          attributes: { email },
+          attributes: {
+            email,
+            subscriptions: {
+              email: {
+                marketing: {
+                  consent: 'SUBSCRIBED',
+                  consented_at: consentedAt,
+                },
+              },
+            },
+          },
         },
       }),
     });
