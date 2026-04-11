@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Jost, Plus_Jakarta_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import Script from "next/script";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -51,6 +52,10 @@ export default function RootLayout({
       >
         {children}
         <Analytics />
+        <Script
+          src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=VmM2iG"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
