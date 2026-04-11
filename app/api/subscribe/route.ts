@@ -22,57 +22,88 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Step 1 — Create or update profile
-    const profileRes = await fetch('https://a.klaviyo.com/api/profiles/', {
+    // Step 1 — Subscribe via bulk-create-jobs (email only, no profile ID)
+    // This records consent + adds to list in one operation
+    const subRes = await fetch('https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs/', {
       method: 'POST',
       headers: KLAVIYO_HEADERS,
       body: JSON.stringify({
         data: {
-          type: 'profile',
+          type: 'profile-subscription-bulk-create-job',
           attributes: {
-            email,
-            properties: {
-              ...(utm_source   && { utm_source }),
-              ...(utm_medium   && { utm_medium }),
-              ...(utm_campaign && { utm_campaign }),
-              ...(utm_content  && { utm_content }),
-              ...(utm_term     && { utm_term }),
-              signup_source: utm_source || 'direct',
-              marketing_consent: true,
-              consented_at: new Date().toISOString(),
+            profiles: {
+              data: [{
+                type: 'profile',
+                attributes: {
+                  email,
+                  subscriptions: {
+                    email: {
+                      marketing: {
+                        consent: 'SUBSCRIBED',
+                      },
+                    },
+                  },
+                },
+              }],
+            },
+          },
+          relationships: {
+            list: {
+              data: {
+                type: 'list',
+                id: KLAVIYO_LIST_ID,
+              },
             },
           },
         },
       }),
     });
 
-    let profileId: string;
-
-    if (profileRes.status === 409) {
-      const conflict = await profileRes.json();
-      profileId = conflict.errors[0].meta.duplicate_profile_id;
-    } else if (profileRes.ok) {
-      const profile = await profileRes.json();
-      profileId = profile.data.id;
-    } else {
-      const err = await profileRes.json();
-      console.error('Klaviyo profile error:', JSON.stringify(err));
+    if (!subRes.ok && subRes.status !== 202) {
+      const err = await subRes.json();
+      console.error('Klaviyo subscription error:', JSON.stringify(err));
       return NextResponse.json({ error: 'Subscription failed' }, { status: 500 });
     }
 
-    // Step 2 — Add profile to list
-    const listRes = await fetch(`https://a.klaviyo.com/api/lists/${KLAVIYO_LIST_ID}/relationships/profiles/`, {
-      method: 'POST',
-      headers: KLAVIYO_HEADERS,
-      body: JSON.stringify({
-        data: [{ type: 'profile', id: profileId }],
-      }),
-    });
-
-    if (!listRes.ok && listRes.status !== 204) {
-      const err = await listRes.json();
-      console.error('Klaviyo list error:', JSON.stringify(err));
-      return NextResponse.json({ error: 'Subscription failed' }, { status: 500 });
+    // Step 2 — Store UTM data as custom properties if present (best-effort, non-blocking)
+    const hasUtm = utm_source || utm_medium || utm_campaign || utm_content || utm_term;
+    if (hasUtm) {
+      try {
+        // Look up profile by email to get ID for property update
+        const lookupRes = await fetch(
+          `https://a.klaviyo.com/api/profiles/?filter=equals(email,"${encodeURIComponent(email)}")`,
+          { headers: KLAVIYO_HEADERS }
+        );
+        if (lookupRes.ok) {
+          const lookup = await lookupRes.json();
+          const profileId = lookup?.data?.[0]?.id;
+          if (profileId) {
+            await fetch(`https://a.klaviyo.com/api/profiles/${profileId}/`, {
+              method: 'PATCH',
+              headers: KLAVIYO_HEADERS,
+              body: JSON.stringify({
+                data: {
+                  type: 'profile',
+                  id: profileId,
+                  attributes: {
+                    properties: {
+                      ...(utm_source   && { utm_source }),
+                      ...(utm_medium   && { utm_medium }),
+                      ...(utm_campaign && { utm_campaign }),
+                      ...(utm_content  && { utm_content }),
+                      ...(utm_term     && { utm_term }),
+                      signup_source: utm_source || 'direct',
+                    },
+                  },
+                },
+              }),
+            });
+          }
+        }
+      } catch (utmErr) {
+        // Non-fatal — log but don't fail the subscription
+        console.error('UTM property update failed:', utmErr);
+      }
     }
 
     return NextResponse.json({ success: true });
