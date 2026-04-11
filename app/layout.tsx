@@ -27,6 +27,10 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: '/favicon.png',
+    apple: '/apple-icon.png',
+  },
   title: "House of Leonard — Style Without Compromise",
   description:
     "Refined eccentricity for the man who knows his own mind — and dresses accordingly. Coming soon.",
