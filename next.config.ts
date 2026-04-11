@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/instagram',
+        destination: '/?utm_source=instagram&utm_medium=social&utm_campaign=waitlist',
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {
