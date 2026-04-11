@@ -25,7 +25,7 @@ export default function Home() {
   const [utmParams, setUtmParams] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
 
-  // Capture UTM parameters from URL on mount
+  // Capture UTM parameters from URL on mount, then clean the URL
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const utm: Record<string, string> = {};
@@ -33,7 +33,11 @@ export default function Home() {
       const val = params.get(key);
       if (val) utm[key] = val;
     });
-    if (Object.keys(utm).length > 0) setUtmParams(utm);
+    if (Object.keys(utm).length > 0) {
+      setUtmParams(utm);
+      // Strip UTM params from the visible URL without affecting tracking
+      window.history.replaceState({}, '', window.location.pathname);
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
