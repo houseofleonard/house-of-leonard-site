@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const colors = {
   primary: "#060d2a",
@@ -23,6 +23,8 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [utmParams, setUtmParams] = useState<Record<string, string>>({});
+  const [scrollY, setScrollY] = useState(0);
+  const heroRef = useRef<HTMLElement>(null);
   const [error, setError] = useState("");
 
   // Capture UTM parameters from URL on mount, then clean the URL
@@ -38,6 +40,11 @@ export default function Home() {
       // Strip UTM params from the visible URL without affecting tracking
       window.history.replaceState({}, '', window.location.pathname);
     }
+
+    // Parallax scroll listener
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,10 +77,7 @@ export default function Home() {
 
       {/* ── Navigation ─────────────────────────────────────────────────── */}
       <nav className="glass-nav" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50, padding: "1.25rem 3rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", gap: "2rem", flex: 1 }} className="hidden-mobile">
-          <span className="section-label" style={{ color: `${colors.primary}55`, cursor: "default" }}>THE EDIT</span>
-          <span className="section-label" style={{ color: `${colors.primary}55`, cursor: "default" }}>JOURNAL</span>
-        </div>
+        <div style={{ display: "flex", gap: "2rem", flex: 1 }} className="hidden-mobile" />
 
         <div style={{ flex: 1, textAlign: "center" }}>
           <span style={{
@@ -89,7 +93,6 @@ export default function Home() {
         </div>
 
         <div style={{ display: "flex", gap: "2rem", flex: 1, justifyContent: "flex-end", alignItems: "center" }} className="hidden-mobile">
-          <span className="section-label" style={{ color: `${colors.primary}55`, cursor: "default" }}>COMMUNITY</span>
           <a
             href="#notify"
             className="btn-primary"
@@ -114,7 +117,9 @@ export default function Home() {
             position: "absolute", inset: 0,
             backgroundImage: "url('https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1800&q=80&fit=crop')",
             backgroundSize: "cover",
-            backgroundPosition: "center 40%",
+            backgroundPosition: `center calc(40% + ${scrollY * 0.3}px)`,
+            opacity: Math.max(0, 1 - scrollY / 600),
+            transition: "opacity 0.1s linear",
           }}
           aria-hidden="true"
         />
@@ -448,7 +453,7 @@ export default function Home() {
             <a href="https://www.instagram.com/thehouseofleonard" target="_blank" rel="noopener noreferrer" className="section-label" style={{ color: colors.onSurfaceVariant, textDecoration: "none" }}>
               INSTAGRAM
             </a>
-            <a href="mailto:hello@houseofleonard.com" className="section-label" style={{ color: colors.onSurfaceVariant, textDecoration: "none" }}>
+            <a href="/contact" className="section-label" style={{ color: colors.onSurfaceVariant, textDecoration: "none" }}>
               CONTACT
             </a>
           </div>
