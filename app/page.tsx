@@ -77,7 +77,9 @@ export default function Home() {
 
       {/* ── Navigation ─────────────────────────────────────────────────── */}
       <nav className="glass-nav" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50, padding: "1.25rem 3rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", gap: "2rem", flex: 1 }} className="hidden-mobile" />
+        <div style={{ display: "flex", gap: "2rem", flex: 1 }} className="hidden-mobile">
+          <a href="/contact" className="section-label" style={{ color: `${colors.primary}99`, textDecoration: "none" }}>CONTACT</a>
+        </div>
 
         <div style={{ flex: 1, textAlign: "center" }}>
           <span style={{
