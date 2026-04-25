@@ -76,7 +76,7 @@ export default function Home() {
     <main style={{ backgroundColor: colors.surface, color: colors.onSurface, minHeight: "100vh" }}>
 
       {/* ── Navigation ─────────────────────────────────────────────────── */}
-      <nav className="glass-nav" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50, padding: "1.25rem 3rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <nav className="glass-nav" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 50, padding: "1.75rem 3rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", gap: "2rem", flex: 1 }} className="hidden-mobile">
           <a href="/contact" className="section-label" style={{ color: `${colors.primary}99`, textDecoration: "none" }}>CONTACT</a>
         </div>
@@ -84,10 +84,10 @@ export default function Home() {
         <div style={{ flex: 1, textAlign: "center" }}>
           <span style={{
             fontFamily: "var(--font-display, 'Cormorant Garamond', serif)",
-            fontWeight: 300,
+            fontWeight: 400,
             color: colors.primary,
             textTransform: "uppercase",
-            letterSpacing: "0.28em",
+            letterSpacing: "0.22em",
             fontSize: "clamp(0.9rem, 2vw, 1.3rem)",
           }}>
             HOUSE OF LEONARD
