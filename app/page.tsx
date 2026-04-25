@@ -445,8 +445,7 @@ export default function Home() {
           </p>
 
           <div style={{ display: "flex", gap: "1.5rem" }}>
-            {/* TODO: Replace # with real Instagram URL */}
-            <a href="#" className="section-label" style={{ color: colors.onSurfaceVariant, textDecoration: "none" }}>
+            <a href="https://www.instagram.com/thehouseofleonard" target="_blank" rel="noopener noreferrer" className="section-label" style={{ color: colors.onSurfaceVariant, textDecoration: "none" }}>
               INSTAGRAM
             </a>
             <a href="mailto:hello@houseofleonard.com" className="section-label" style={{ color: colors.onSurfaceVariant, textDecoration: "none" }}>
